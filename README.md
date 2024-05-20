@@ -1,52 +1,33 @@
-# midi2mqtt2ha Setup Guide
+# MIDI to MQTT Service
 
-### Requirements
+This repository contains a Python script that receives MIDI events and sends them to an MQTT broker. The script is designed to run on a Raspberry Pi and can be set up to start on boot using `systemd`.
+
+## Requirements
 
 Ensure you have the required Python packages installed:
 
 - `paho-mqtt`
-- `python-rtmidi`
+- `rtmidi-python`
 
-### Setup Instructions
+### Installation of Dependencies
 
-1. **pip** :
-
-- On Debian-based systems:
+1. **paho-mqtt** :
 
 ```sh
 sudo apt update
-sudo apt install python3-pip -y
+sudo apt install python3-paho-mqtt
 ```
 
-- On Red Hat-based systems:
+2. **rtmidi-python** (if available):
 
 ```sh
-sudo yum install python3-pip -y
+sudo apt install python3-rtmidi
 ```
 
-- On macOS:
+3. **Run the Script** :
 
 ```sh
-brew install python
-```
-
-2. **Clone the Repository** :
-
-```sh
-git clone <your-repo-url>
-cd <your-repo-directory>
-```
-
-3. **Install Dependencies** :
-
-```sh
-pip3 install paho-mqtt python-rtmidi
-```
-
-4. **Run the Script** :
-
-```sh
-python3 midi2broker.py --host localhost --port 1883 --midiport 1 --topicprefix midi
+python3 midi2mqtt.py --host 192.168.4.221 --port 1883 --topicprefix homeassistant --midiport 2
 ```
 
 ### Command Line Arguments
@@ -63,6 +44,64 @@ To subscribe to the MQTT messages published by this script, use a client like `m
 ```sh
 mosquitto_sub -h localhost -t "midi/#" -v
 ```
+
+### Logging
+
+The script logs important events and errors. Ensure to check the logs for connection status and any issues that may arise.
+
+## Setup as a Systemd Service
+
+1. **Create a service file** :
+
+```sh
+sudo nano /etc/systemd/system/midi2mqtt.service
+```
+
+2. **Add the following content to the service file** :
+
+```ini
+[Unit]
+Description=MIDI to MQTT Service
+After=network.target
+
+[Service]
+ExecStartPre=/bin/sleep 30
+ExecStart=/usr/bin/python3 /home/pi/midi2mqtt2ha/midi2mqtt.py --host 192.168.4.221 --port 1883 --topicprefix homeassistant --midiport 2
+WorkingDirectory=/home/pi/midi2mqtt2ha
+StandardOutput=journal
+StandardError=journal
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+3. **Reload the systemd daemon** :
+
+```sh
+sudo systemctl daemon-reload
+```
+
+4. **Enable the service to start on boot** :
+
+```sh
+sudo systemctl enable midi2mqtt.service
+```
+
+5. **Start the service** :
+
+```sh
+sudo systemctl start midi2mqtt.service
+```
+
+6. **Check the status of the service** :
+
+```sh
+sudo systemctl status midi2mqtt.service
+```
+
+This setup will ensure that your script runs on startup and waits for 30 seconds before starting.
 
 This guide will walk you through setting up `midi2mqtt.py` to run automatically at boot on a MacOS system using a launchd plist file. This method ensures that the script starts without manual intervention, making your setup more robust and user-friendly.
 
