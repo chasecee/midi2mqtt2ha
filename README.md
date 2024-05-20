@@ -27,7 +27,7 @@ sudo apt install python3-rtmidi
 3. **Run the Script** :
 
 ```sh
-python3 midi2mqtt.py --host 192.168.4.221 --port 1883 --topicprefix homeassistant --midiport 2
+python3 midi2mqtt.py --host 192.168.4.XXX --port 1883 --topicprefix homeassistant --midiport 2
 ```
 
 ### Command Line Arguments
@@ -66,7 +66,7 @@ After=network.target
 
 [Service]
 ExecStartPre=/bin/sleep 30
-ExecStart=/usr/bin/python3 /home/pi/midi2mqtt2ha/midi2mqtt.py --host 192.168.4.221 --port 1883 --topicprefix homeassistant --midiport 2
+ExecStart=/usr/bin/python3 /home/pi/midi2mqtt2ha/midi2mqtt.py --host 192.168.4.XXX --port 1883 --topicprefix homeassistant --midiport 2
 WorkingDirectory=/home/pi/midi2mqtt2ha
 StandardOutput=journal
 StandardError=journal
@@ -122,7 +122,7 @@ cat << EOF > ~/Library/LaunchAgents/com.midi2mqtt.plist
         <string>/usr/bin/python3</string>
         <string>/Users/chase/Code/midi2mqtt2ha/midi2mqtt.py</string>
         <string>--host</string>
-        <string>192.168.4.221</string>
+        <string>192.168.4.XXX</string>
         <string>--port</string>
         <string>1883</string>
         <string>--topicprefix</string>
