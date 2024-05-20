@@ -1,5 +1,69 @@
 # midi2mqtt2ha Setup Guide
 
+### Requirements
+
+Ensure you have the required Python packages installed:
+
+- `paho-mqtt`
+- `python-rtmidi`
+
+### Setup Instructions
+
+1. **pip** :
+
+- On Debian-based systems:
+
+```sh
+sudo apt update
+sudo apt install python3-pip -y
+```
+
+- On Red Hat-based systems:
+
+```sh
+sudo yum install python3-pip -y
+```
+
+- On macOS:
+
+```sh
+brew install python
+```
+
+2. **Clone the Repository** :
+
+```sh
+git clone <your-repo-url>
+cd <your-repo-directory>
+```
+
+3. **Install Dependencies** :
+
+```sh
+pip3 install paho-mqtt python-rtmidi
+```
+
+4. **Run the Script** :
+
+```sh
+python3 midi2broker.py --host localhost --port 1883 --midiport 1 --topicprefix midi
+```
+
+### Command Line Arguments
+
+- `--host`: Host of the MQTT Broker (default: `localhost`)
+- `--port`: Port of the MQTT Broker (default: `1883`)
+- `--midiport`: Port of the MIDI Interface (default: `1`)
+- `--topicprefix`: Prefix for the MQTT topic (default: `midi`)
+
+### Usage Example
+
+To subscribe to the MQTT messages published by this script, use a client like `mosquitto_sub`:
+
+```sh
+mosquitto_sub -h localhost -t "midi/#" -v
+```
+
 This guide will walk you through setting up `midi2mqtt.py` to run automatically at boot on a MacOS system using a launchd plist file. This method ensures that the script starts without manual intervention, making your setup more robust and user-friendly.
 
 ## Step 1: Creating a plist file
