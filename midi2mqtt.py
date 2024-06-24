@@ -4,9 +4,15 @@ import argparse
 import time
 import json
 import logging
+import logging.handlers
+import os
 
 # Set up basic logging
-logging.basicConfig(level=logging.INFO)
+if 'JOURNAL_STREAM' in os.environ:
+    handler = logging.handlers.SysLogHandler(address='/dev/log')
+    logging.basicConfig(level=logging.INFO, handlers=[handler])
+else:
+    logging.basicConfig(level=logging.INFO)
 
 class Midi2Broker:
     """Receiving MIDI events and sending them to an MQTT broker."""
