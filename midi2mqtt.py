@@ -10,9 +10,9 @@ import os
 # Set up basic logging
 if 'JOURNAL_STREAM' in os.environ:
     handler = logging.handlers.SysLogHandler(address='/dev/log')
-    logging.basicConfig(level=logging.INFO, handlers=[handler])
+    logging.basicConfig(level=logging.WARNING, handlers=[handler])  # Changed to WARNING
 else:
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.WARNING)  # Changed to WARNING
 
 class Midi2Broker:
     """Receiving MIDI events and sending them to an MQTT broker."""
